@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Capybara Media — Interface-Wireframes</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #2b5b7a;
+    --blue-light: #e4edf3;
+    --line: #7a99ac;
+    --paper: #fbfcfd;
+    --accent: #d4622a;
+    --ink: #1e2d35;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--blue-light);
+    background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 24px 24px;
+    background-position: -1px -1px;
+    opacity: 1;
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+  }
+  .bg-tint { background: rgba(228,237,243,0.88); min-height: 100vh; padding: 20px 14px 60px; }
+  header { max-width: 760px; margin: 0 auto 16px; }
+  h1 { font-family: 'JetBrains Mono', monospace; font-size: 20px; color: var(--blue); margin: 0 0 4px; letter-spacing: 0.02em; }
+  .sub { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--line); text-transform: uppercase; letter-spacing: 0.08em; }
+  .tabs { max-width: 760px; margin: 16px auto 0; display: flex; flex-wrap: wrap; gap: 6px; }
+  .tab {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em;
+    padding: 8px 12px; background: #fff; border: 1.5px solid var(--line); border-radius: 4px; cursor: pointer; color: var(--blue);
+  }
+  .tab.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+  .screen { max-width: 760px; margin: 14px auto 0; background: var(--paper); border: 2px solid var(--blue); border-radius: 6px; padding: 18px; display: none; }
+  .screen.active { display: block; }
+  .screen-title { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 14px; border-bottom: 1px dashed var(--line); padding-bottom: 8px; }
+  .box { border: 1.5px dashed var(--line); border-radius: 4px; padding: 10px; background: rgba(43,91,122,0.03); }
+  .label { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--blue); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; display: block; }
+  .ph { color: #93a8b3; font-style: italic; font-size: 12px; }
+  .row { display: flex; gap: 10px; }
+  .col { flex: 1; }
+  .btn { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; padding: 6px 10px; border: 1.5px solid var(--blue); border-radius: 3px; color: var(--blue); background: #fff; text-align: center; }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .avatar { width: 36px; height: 36px; border-radius: 50%; border: 1.5px dashed var(--line); display: flex; align-items: center; justify-content: center; font-size: 8px; color: var(--line); background: #fff; flex-shrink: 0; }
+  .pitch-card { border: 1.5px solid var(--line); border-radius: 4px; padding: 10px; margin-bottom: 8px; background: #fff; }
+  .headline { font-family: 'JetBrains Mono', monospace; font-size: 13px; margin: 4px 0 6px; }
+  .tag { font-family: 'JetBrains Mono', monospace; font-size: 9px; padding: 2px 6px; border: 1px solid var(--line); border-radius: 3px; color: var(--blue); margin-right: 4px; }
+  .floor-strip { border: 2px solid var(--blue); border-radius: 4px; padding: 10px; margin-bottom: 8px; }
+  .floor-strip .slots { display: flex; gap: 6px; margin-top: 6px; }
+  .slot-dot { width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid var(--blue); }
+  .slot-dot.filled { background: var(--blue); }
+  .note { position: absolute; font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--accent); background: #fff; border: 1px solid var(--accent); border-radius: 10px; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; }
+  .annotations { margin-top: 14px; border-top: 1px dashed var(--line); padding-top: 10px; }
+  .annotations div { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--blue); margin-bottom: 3px; }
+  .annotations b { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="bg-tint">
+<header>
+  <h1>CAPYBARA MEDIA — INTERFACE WIREFRAMES</h1>
+  <div class="sub">Layout-Vorlage, keine finale Grafik — Struktur & Hierarchie als Referenz</div>
+</header>
+
+<div class="tabs" id="tabs"></div>
+<div id="screens"></div>
+
+</div>
+
+<script>
+const screens = [
+  {
+    id: 'konferenz',
+    name: '1. Redaktionskonferenz',
+    render: () => `
+      <div class="screen-title">Screen 1 / Redaktionskonferenz — Pitch-Auswahl</div>
+      <div class="row" style="margin-bottom:10px;">
+        <div class="box col"><span class="label">Tag-Zähler</span>Tag 47 / Kapitel 1</div>
+        <div class="box col"><span class="label">Etage</span>Text-Redaktion</div>
+      </div>
+      <div class="row" style="margin-bottom:10px;">
+        <span class="label" style="flex:1">Besetzung (3 Slots)</span>
+      </div>
+      <div class="row" style="margin-bottom:12px;">
+        <div class="avatar">Gwen<br>SK2</div>
+        <div class="avatar">Lizzy<br>SK2</div>
+        <div class="avatar" style="border-style:dashed;color:#ccc;">leer</div>
+      </div>
+      <span class="label">Pitches (3 Optionen, 1 wählen)</span>
+      <div class="pitch-card">
+        <div class="row" style="justify-content:space-between;">
+          <span class="tag">Aufwand 2</span>
+          <span class="ph">Boulevard-Grad verdeckt</span>
+        </div>
+        <div class="headline">"Skandal! Stadtrat verzockt Steuergelder beim Poker!!"</div>
+        <div class="btn primary">Auswählen</div>
+      </div>
+      <div class="pitch-card">
+        <div class="row" style="justify-content:space-between;">
+          <span class="tag">Aufwand 4</span>
+          <span class="ph">Boulevard-Grad verdeckt</span>
+        </div>
+        <div class="headline">"Studie zeigt: Trinkwasserqualität in CDC rückläufig"</div>
+        <div class="btn primary">Auswählen</div>
+      </div>
+      <div class="pitch-card">
+        <div class="row" style="justify-content:space-between;">
+          <span class="tag">Aufwand 1</span>
+          <span class="ph">Boulevard-Grad verdeckt</span>
+        </div>
+        <div class="headline">"Die besten Cafés in CDC — unsere Top 5"</div>
+        <div class="btn primary">Auswählen</div>
+      </div>
+      <div class="annotations">
+        <div><b>①</b> Headline = einzige sichtbare Information zum Boulevard-Grad (Stilkonvention muss Gespür ermöglichen)</div>
+        <div><b>②</b> Aufwand ist sichtbar, Skill-Icons der besetzten Slots direkt vergleichbar</div>
+        <div><b>③</b> Leerer Slot sichtbar markiert (Verlangsamungs-Hinweis könnte hier als Icon sitzen)</div>
+      </div>
+    `
+  },
+  {
+    id: 'ergebnis',
+    name: '2. Tages-Ergebnis',
+    render: () => `
+      <div class="screen-title">Screen 2 / Feedback-Beat — Tagesabschluss</div>
+      <div class="box" style="margin-bottom:10px;">
+        <span class="label">Veröffentlicht</span>
+        <div class="headline">"Skandal! Stadtrat verzockt Steuergelder beim Poker!!"</div>
+        <span class="ph">→ war Boulevard-Grad 5 (jetzt aufgedeckt)</span>
+      </div>
+      <div class="row" style="margin-bottom:8px;">
+        <div class="box col"><span class="label">Δ Reichweite</span><b>+34</b> <span class="ph">(312 → 346)</span></div>
+        <div class="box col"><span class="label">Δ Reputation</span><b>-6</b> <span class="ph">(58 → 52)</span></div>
+      </div>
+      <div class="row" style="margin-bottom:10px;">
+        <div class="box col"><span class="label">Δ Kontostand</span><b>+18 Münzen</b></div>
+        <div class="box col"><span class="label">Kontostand gesamt</span><b>642 Münzen</b></div>
+      </div>
+      <div class="box" style="margin-bottom:10px;">
+        <span class="label">Abwechslungs-Hinweis</span>
+        <span class="ph">"Deine letzten Berichte waren sehr ähnlich — die Leser:innen werden unruhig."</span>
+      </div>
+      <div class="btn primary">Weiter zu Tag 48</div>
+      <div class="annotations">
+        <div><b>①</b> Vorher/Nachher-Werte klein daneben, damit Ursache sichtbar bleibt</div>
+        <div><b>②</b> Abwechslungsmechanik bekommt eigenen kleinen Hinweistext, kein reiner Zahlen-Dump</div>
+      </div>
+    `
+  },
+  {
+    id: 'dialog',
+    name: '3. Story-Dialog',
+    render: () => `
+      <div class="screen-title">Screen 3 / Story-Dialog — Dave-the-Diver-Stil</div>
+      <div class="box" style="min-height:160px; display:flex; flex-direction:column; justify-content:flex-end; position:relative;">
+        <div style="position:absolute; top:10px; left:10px;" class="avatar" style="width:64px;height:64px;">Portrait<br>Francis</div>
+        <div style="margin-left:80px;">
+          <span class="label">Sprecher</span>
+          <div class="box" style="background:#fff;">
+            <span class="ph">"Ich habe gehört, Sie wollen groß ins Mediengeschäft einsteigen. Allzu modern sieht's hier ja nicht aus, hehe."</span>
+          </div>
+        </div>
+      </div>
+      <div class="row" style="margin-top:8px; justify-content:flex-end;">
+        <div class="btn">▶ Weiterklicken</div>
+      </div>
+      <div class="annotations">
+        <div><b>①</b> Portrait fix oben-links, Textbox wächst nach rechts/unten — pro Sprecherwechsel neues Portrait</div>
+        <div><b>②</b> Ein Klick = ein Absatz, kein Scrollen nötig (kurze Textblöcke, s. Design-Dok)</div>
+      </div>
+    `
+  },
+  {
+    id: 'buero',
+    name: '4. Büro-Übersicht',
+    render: () => `
+      <div class="screen-title">Screen 4 / Büro-Übersicht — Etagen-Navigation</div>
+      <div class="floor-strip" style="opacity:0.4;">
+        <span class="label">Etage 3 — Entwicklung</span> <span class="ph">gesperrt bis Kapitel 3</span>
+      </div>
+      <div class="floor-strip">
+        <span class="label">Etage 2 — Multimedia-Redaktion</span>
+        <div class="slots">
+          <div class="slot-dot filled"></div><div class="slot-dot"></div><div class="slot-dot"></div>
+        </div>
+      </div>
+      <div class="floor-strip">
+        <span class="label">Etage 1 — Text-Redaktion</span>
+        <div class="slots">
+          <div class="slot-dot filled"></div><div class="slot-dot filled"></div><div class="slot-dot"></div>
+        </div>
+      </div>
+      <div class="floor-strip">
+        <span class="label">Chefredakteursbüro</span> <span class="ph">Quentin (kein Slot)</span>
+      </div>
+      <div class="row" style="margin-top:10px;">
+        <div class="btn col">Etage bauen</div>
+        <div class="btn col">Personal verwalten</div>
+      </div>
+      <div class="annotations">
+        <div><b>①</b> Gefüllte vs. leere Slot-Punkte auf einen Blick — Klick auf Etage öffnet Personalzuteilung</div>
+        <div><b>②</b> Gesperrte Etage sichtbar, aber klar als "noch nicht dran" markiert (Kapitel-Kopplung)</div>
+      </div>
+    `
+  },
+  {
+    id: 'markt',
+    name: '5. Arbeitsmarkt',
+    render: () => `
+      <div class="screen-title">Screen 5 / Arbeitsmarkt — Hiring & Fortbildung</div>
+      <span class="label">Eigenes Team (fortbilden)</span>
+      <div class="row" style="margin-bottom:10px;">
+        <div class="box col">
+          <div class="row" style="align-items:center;"><div class="avatar">Gwen</div><div><b>Gwen</b><br><span class="ph">Skill 2 → 3</span></div></div>
+          <div class="btn" style="margin-top:6px;">Fortbilden (Kosten + 3 Tage Ausfall)</div>
+        </div>
+      </div>
+      <span class="label">Arbeitsmarkt (fertig gelevelt einkaufen)</span>
+      <div class="row">
+        <div class="box col">
+          <div class="row" style="align-items:center;"><div class="avatar">Ed</div><div><b>Ed</b><br><span class="ph">Skill 4, sofort verfügbar</span></div></div>
+          <div class="btn primary" style="margin-top:6px;">Einstellen (teurer, kein Ausfall)</div>
+        </div>
+      </div>
+      <div class="annotations">
+        <div><b>①</b> Zwei Spalten nebeneinander machen den Kauf-vs-Ausbilden-Trade-off auf einen Blick sichtbar</div>
+        <div><b>②</b> Ausfallzeit beim Fortbilden explizit als Kosten-Faktor benannt, nicht versteckt</div>
+      </div>
+    `
+  }
+];
+
+let current = 'konferenz';
+
+function render() {
+  document.getElementById('tabs').innerHTML = screens.map(s =>
+    `<div class="tab ${s.id===current?'active':''}" onclick="switchTo('${s.id}')">${s.name}</div>`
+  ).join('');
+  document.getElementById('screens').innerHTML = screens.map(s =>
+    `<div class="screen ${s.id===current?'active':''}" style="position:relative;">${s.render()}</div>`
+  ).join('');
+}
+function switchTo(id) { current = id; render(); }
+render();
+</script>
+</body>
+</html>

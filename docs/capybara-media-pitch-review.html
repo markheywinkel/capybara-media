@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Capybara Media — Pitch-Board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #efe7d6;
+    --paper-dark: #e3d8c0;
+    --ink: #2b2620;
+    --ink-soft: #5a4f3f;
+    --line: #c9b995;
+    --accept: #3f6b4a;
+    --accept-bg: #e2ead9;
+    --reject: #a8433a;
+    --reject-bg: #f2ddd6;
+    --pending: #b8863b;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(43,38,32,0.06) 1px, transparent 0);
+    background-size: 14px 14px;
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    padding: 24px 16px 64px;
+  }
+  header {
+    max-width: 720px;
+    margin: 0 auto 20px;
+    border-bottom: 3px double var(--ink);
+    padding-bottom: 14px;
+  }
+  h1 {
+    font-family: 'Special Elite', monospace;
+    font-size: 26px;
+    letter-spacing: 0.5px;
+    margin: 0 0 4px;
+  }
+  .subhead {
+    font-size: 13px;
+    color: var(--ink-soft);
+    font-style: italic;
+  }
+  .tabs {
+    max-width: 720px;
+    margin: 18px auto 0;
+    display: flex;
+    gap: 8px;
+  }
+  .tab {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 9px 14px;
+    background: var(--paper-dark);
+    border: 1px solid var(--line);
+    border-bottom: none;
+    border-radius: 6px 6px 0 0;
+    cursor: pointer;
+    color: var(--ink-soft);
+  }
+  .tab.active {
+    background: var(--paper);
+    color: var(--ink);
+    font-weight: 700;
+    border-color: var(--ink);
+  }
+  .count {
+    font-size: 10px;
+    opacity: 0.7;
+  }
+  .board {
+    max-width: 720px;
+    margin: 0 auto;
+    border: 1px solid var(--line);
+    border-top: none;
+    background: var(--paper);
+    padding: 16px;
+    border-radius: 0 8px 8px 8px;
+  }
+  .card {
+    background: #fbf7ec;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    position: relative;
+    box-shadow: 1px 2px 4px rgba(43,38,32,0.08);
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  .card:nth-child(3n+1) { transform: rotate(-0.4deg); }
+  .card:nth-child(3n+2) { transform: rotate(0.3deg); }
+  .card.decided { opacity: 0.55; }
+  .card-title {
+    font-family: 'Special Elite', monospace;
+    font-size: 15px;
+    line-height: 1.4;
+    margin: 0 0 8px;
+  }
+  .card-title textarea {
+    width: 100%;
+    font-family: 'Special Elite', monospace;
+    font-size: 15px;
+    line-height: 1.4;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 6px 8px;
+    resize: vertical;
+  }
+  .tags {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 3px 8px;
+    border-radius: 3px;
+    border: 1px solid var(--line);
+    background: var(--paper-dark);
+    color: var(--ink-soft);
+  }
+  .actions {
+    display: flex;
+    gap: 8px;
+  }
+  button {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 7px 12px;
+    border-radius: 4px;
+    border: 1.5px solid var(--ink);
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+  }
+  button.accept { border-color: var(--accept); color: var(--accept); }
+  button.accept.on { background: var(--accept-bg); }
+  button.reject { border-color: var(--reject); color: var(--reject); }
+  button.reject.on { background: var(--reject-bg); }
+  button.edit { border-color: var(--ink-soft); color: var(--ink-soft); }
+  .stamp {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    font-family: 'Special Elite', monospace;
+    font-size: 12px;
+    padding: 2px 8px;
+    border: 2px solid;
+    border-radius: 3px;
+    transform: rotate(-8deg);
+    letter-spacing: 0.08em;
+  }
+  .stamp.accept { color: var(--accept); border-color: var(--accept); }
+  .stamp.reject { color: var(--reject); border-color: var(--reject); }
+  .footer-bar {
+    max-width: 720px;
+    margin: 18px auto 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+  .export-btn {
+    border-color: var(--ink);
+    background: var(--ink);
+    color: var(--paper);
+    padding: 9px 16px;
+  }
+  #exportBox {
+    max-width: 720px;
+    margin: 12px auto 0;
+    display: none;
+  }
+  #exportBox textarea {
+    width: 100%;
+    height: 220px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    padding: 10px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #fff;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Capybara Media — Pitch-Board</h1>
+  <div class="subhead">Annehmen, ablehnen oder bearbeiten. Entscheidungen bleiben gespeichert.</div>
+</header>
+
+<div class="tabs" id="tabs"></div>
+<div class="board" id="board"></div>
+
+<div class="footer-bar">
+  <div id="statusLine"></div>
+  <button class="export-btn" onclick="exportAccepted()">Akzeptierte exportieren</button>
+</div>
+
+<div id="exportBox">
+  <textarea id="exportText" readonly></textarea>
+</div>
+
+<script>
+const PITCHES = [
+  // Multimedia
+  {id:'mm1', floor:'multimedia', title:'Ich habe 24 Stunden im Rathaus von CDC verbracht (SCHOCKIEREND)', grade:4, effort:2},
+  {id:'mm2', floor:'multimedia', title:'Wie CDC seine Mülltrennung organisiert — eine Reportage', grade:1, effort:3},
+  {id:'mm3', floor:'multimedia', title:'DAS ist Amber Abbertons Geheimnis! (ihr Friseur hat ausgepackt)', grade:5, effort:2},
+  {id:'mm4', floor:'multimedia', title:'Nachtwüstenfuchs in Gefahr? Wir waren vor Ort', grade:2, effort:4},
+  {id:'mm5', floor:'multimedia', title:'5 Minuten mit Bürgermeister McDarmond', grade:3, effort:2},
+  {id:'mm6', floor:'multimedia', title:'So trainiert Boxer Sid WIRKLICH (exklusive Bilder)', grade:4, effort:3},
+  {id:'mm7', floor:'multimedia', title:'CDC-Verkehrschaos: Wir haben nachgefragt, warum niemand etwas tut', grade:2, effort:3},
+  {id:'mm8', floor:'multimedia', title:'Prof. West erklärt: Was bedeutet der Klimawandel für CDC?', grade:1, effort:4},
+  {id:'mm9', floor:'multimedia', title:'Diese Straßenkünstler bringen CDC zum Staunen', grade:2, effort:2},
+  {id:'mm10', floor:'multimedia', title:'Polizeichefin Lombardo im Großeinsatz — Kamera war dabei', grade:3, effort:3},
+  {id:'mm11', floor:'multimedia', title:'TOP 10 Peinlichste Momente aus dem Rathaus', grade:5, effort:1},
+  {id:'mm12', floor:'multimedia', title:'CDCs vergessene Kanalisation: Eine Bestandsaufnahme', grade:1, effort:4},
+  // Entwicklung
+  {id:'ev9', floor:'entwicklung', title:'Chat mit synthetischer Amber — KI-Popstar-Chatbot, der nur in Superlativen spricht', bonus:'groß', effort:4},
+  {id:'ev10', floor:'entwicklung', title:'VR-Boxring: Virtueller Kampf gegen Sid Griffin (der ständig über die eigenen Füße stolpert)', bonus:'groß', effort:5},
+  {id:'ev11', floor:'entwicklung', title:'3D-Bürotour durch McDarmonds Amtsstube — inklusive seiner zweifelhaften Kunstsammlung', bonus:'mittel', effort:3},
+  {id:'ev12', floor:'entwicklung', title:'Deepfake-Bürgermeister-Reden-Generator — lässt McDarmond herrlichen Unsinn sagen', bonus:'groß', effort:4},
+  {id:'ev13', floor:'entwicklung', title:'Autobahn-Bau-Simulator — satirisches Browser-Mini-Spiel zur Autobahn-Story', bonus:'groß', effort:5},
+  {id:'ev14', floor:'entwicklung', title:'Prof.-West-Wissenschafts-Quiz — mit absichtlich falschen Antwortoptionen von McDarmond', bonus:'klein', effort:2},
+  {id:'ev15', floor:'entwicklung', title:'Synthetischer Lombardo-Podcast-Host, der alte Kriminalfälle dramatisch "nacherzählt"', bonus:'mittel', effort:4},
+  {id:'ev16', floor:'entwicklung', title:'Riech-o-Meter: KI errät per Foto, wie McDarmonds Kunstsammlung wohl riecht', bonus:'klein', effort:1},
+  {id:'ev17', floor:'entwicklung', title:'"Werde zum Nachtwüstenfuchs"-Foto-Filter fürs Leser-Profil', bonus:'klein', effort:2},
+  {id:'ev18', floor:'entwicklung', title:'Sid-Griffin-Zitter-Filter: dein Video bekommt Boxhandschuh-Wackelkamera-Effekt', bonus:'klein', effort:2},
+  // Text (Batch 2)
+  {id:'tx1', floor:'text', title:'Bürgermeister McDarmond eröffnet neuen Kreisverkehr — mit Fanfare', grade:3, effort:1},
+  {id:'tx2', floor:'text', title:'Exklusiv: Interne Dokumente zeigen Verzögerungen beim Brückenbau', grade:1, effort:4},
+  {id:'tx3', floor:'text', title:'Schockierend! Diese Fischart lebt jetzt mitten in der Innenstadt', grade:4, effort:2},
+  {id:'tx4', floor:'text', title:'Delfine fordern eigenen Hafenabschnitt — Stadtrat uneins', grade:2, effort:3},
+  {id:'tx5', floor:'text', title:'Wal-Sichtung sorgt für Verkehrschaos an der Uferpromenade', grade:3, effort:2},
+  {id:'tx6', floor:'text', title:'CDCs Müllabfuhr streikt: Wer räumt jetzt den Unrat weg?', grade:2, effort:3},
+  {id:'tx7', floor:'text', title:'Sensation! Erdmännchen-Gang knackt Rekord bei Bankraub-Versuchen (0)', grade:5, effort:1},
+  {id:'tx8', floor:'text', title:'Stadtkämmerei veröffentlicht Jahresbericht: Defizit wächst', grade:1, effort:3},
+  {id:'tx9', floor:'text', title:'Prof. West warnt: CDCs Grundwasserspiegel sinkt bedenklich', grade:1, effort:4},
+  {id:'tx10', floor:'text', title:'Wir haben McDarmonds Reden-Schreiber getroffen: Ein Insider packt aus', grade:4, effort:3},
+  {id:'tx11', floor:'text', title:'Ist Amber Abbertons neues Album nur recycelter Kitsch?', grade:4, effort:2},
+  {id:'tx12', floor:'text', title:'Restaurantkritik: Das neue Bambus-Bistro im Pandaviertel', grade:2, effort:1},
+  {id:'tx13', floor:'text', title:'Katzenbande terrorisiert Vorstadt — Anwohner fordern Maßnahmen', grade:3, effort:2},
+  {id:'tx14', floor:'text', title:'Lombardo kündigt neue Streifenwagen-Flotte an', grade:2, effort:2},
+  {id:'tx15', floor:'text', title:'Report: So marode sind CDCs Schulen wirklich', grade:1, effort:4},
+  {id:'tx16', floor:'text', title:'Diese fünf Cafés solltest du in CDC probiert haben', grade:2, effort:1},
+  {id:'tx17', floor:'text', title:'Nager-Mafia? Gerüchte um organisiertes Verbrechen in der Kanalisation', grade:4, effort:3},
+  {id:'tx18', floor:'text', title:'CDC-Symphonieorchester kündigt neue Saison an', grade:2, effort:1},
+  {id:'tx19', floor:'text', title:'Exklusiv: Amber Abberton über Erfolgsdruck und schlaflose Nächte', grade:3, effort:2},
+  {id:'tx20', floor:'text', title:'Studie: Immer mehr junge Tiere ziehen aus CDC weg', grade:1, effort:3},
+  // Multimedia (Batch 2)
+  {id:'mm13', floor:'multimedia', title:'Wir haben Amber Abbertons Konzert-Tour begleitet — hinter den Kulissen', grade:3, effort:3},
+  {id:'mm14', floor:'multimedia', title:'ANGST-Test: Wie sicher sind CDCs Spielplätze WIRKLICH?', grade:4, effort:2},
+  {id:'mm15', floor:'multimedia', title:'Ein Tag im Leben eines Müllabfuhr-Mitarbeiters', grade:1, effort:2},
+  {id:'mm16', floor:'multimedia', title:'Wir haben McDarmonds Reden faktengecheckt (LIVE-Reaktion)', grade:3, effort:3},
+  {id:'mm17', floor:'multimedia', title:'Interview mit Prof. West: Die Zukunft der Nachtwüstenfüchse', grade:1, effort:3},
+  {id:'mm18', floor:'multimedia', title:'DIESE Kanalisation ist ein Nager-Paradies (Doku)', grade:2, effort:3},
+  {id:'mm19', floor:'multimedia', title:'24 Stunden mit Boxer Sid vor dem großen Kampf', grade:4, effort:2},
+  {id:'mm20', floor:'multimedia', title:'Wir haben CDCs Schulen besucht — was läuft schief?', grade:1, effort:4},
+  {id:'mm21', floor:'multimedia', title:'Katzenbande vs. Anwohner: Wir haben beide Seiten befragt', grade:2, effort:3},
+  {id:'mm22', floor:'multimedia', title:'Amber Abbertons peinlichste Bühnenmomente (COMPILATION)', grade:5, effort:1},
+  // Entwicklung (Batch 2)
+  {id:'ev19', floor:'entwicklung', title:'CDC-Bürgermeister-Wahlkampf-Bingo-App', bonus:'klein', effort:2},
+  {id:'ev20', floor:'entwicklung', title:'Synthetischer Wetterfrosch-Moderator fürs Multimedia-Studio', bonus:'mittel', effort:3},
+  {id:'ev21', floor:'entwicklung', title:'"Wie riecht dein Artikel?"-KI-Gimmick für die Leser-App', bonus:'klein', effort:1},
+  {id:'ev22', floor:'entwicklung', title:'Interaktive Kanalisationskarte mit Nager-Mafia-Verschwörungstheorien', bonus:'mittel', effort:4},
+];
+
+let state = {}; // id -> {status, title}
+let currentTab = 'multimedia';
+let storageOk = true;
+
+async function loadState() {
+  for (const p of PITCHES) {
+    state[p.id] = {status: 'pending', title: p.title};
+    if (!storageOk) continue;
+    try {
+      const res = await window.storage.get('pitch:' + p.id, false);
+      if (res && res.value) state[p.id] = JSON.parse(res.value);
+    } catch (e) {
+      // Key existiert noch nicht oder Storage nicht verfügbar — Default bleibt bestehen
+    }
+  }
+  render();
+}
+
+async function saveState(id) {
+  if (!storageOk) return;
+  try {
+    await window.storage.set('pitch:' + id, JSON.stringify(state[id]), false);
+  } catch (e) {
+    storageOk = false;
+    render();
+  }
+}
+
+function setStatus(id, status) {
+  state[id].status = state[id].status === status ? 'pending' : status;
+  saveState(id);
+  render();
+}
+
+function toggleEdit(id) {
+  state[id].editing = !state[id].editing;
+  render();
+}
+
+function saveEdit(id, newTitle) {
+  state[id].title = newTitle;
+  state[id].editing = false;
+  saveState(id);
+  render();
+}
+
+function renderTabs() {
+  const floors = [['text','Text'],['multimedia','Multimedia'],['entwicklung','Entwicklung']];
+  document.getElementById('tabs').innerHTML = floors.map(([key,label]) => {
+    const total = PITCHES.filter(p=>p.floor===key).length;
+    const decided = PITCHES.filter(p=>p.floor===key && state[p.id] && state[p.id].status !== 'pending').length;
+    return `<div class="tab ${currentTab===key?'active':''}" onclick="switchTab('${key}')">${label} <span class="count">${decided}/${total}</span></div>`;
+  }).join('');
+}
+
+function switchTab(key) { currentTab = key; render(); }
+
+function render() {
+  renderTabs();
+  const list = PITCHES.filter(p => p.floor === currentTab);
+  document.getElementById('board').innerHTML = list.map(p => {
+    const s = state[p.id] || {status:'pending', title:p.title};
+    const decided = s.status !== 'pending';
+    const stamp = s.status === 'accepted' ? '<div class="stamp accept">✓ angenommen</div>'
+                : s.status === 'rejected' ? '<div class="stamp reject">✕ abgelehnt</div>' : '';
+    const metaTag = p.floor === 'entwicklung'
+      ? `<span class="tag">Bonus: ${p.bonus}</span><span class="tag">Aufwand ${p.effort}/5</span>`
+      : `<span class="tag">Boulevard-Grad ${p.grade}/5</span><span class="tag">Aufwand ${p.effort}/5</span>`;
+    const titleHtml = s.editing
+      ? `<textarea id="edit-${p.id}" rows="2">${s.title}</textarea>`
+      : `<p class="card-title">${s.title}</p>`;
+    return `
+      <div class="card ${decided?'decided':''}">
+        ${stamp}
+        ${titleHtml}
+        <div class="tags">${metaTag}</div>
+        <div class="actions">
+          ${s.editing
+            ? `<button onclick="saveEdit('${p.id}', document.getElementById('edit-${p.id}').value)">Speichern</button>`
+            : `<button class="accept ${s.status==='accepted'?'on':''}" onclick="setStatus('${p.id}','accepted')">Annehmen</button>
+               <button class="reject ${s.status==='rejected'?'on':''}" onclick="setStatus('${p.id}','rejected')">Ablehnen</button>
+               <button class="edit" onclick="toggleEdit('${p.id}')">Bearbeiten</button>`
+          }
+        </div>
+      </div>`;
+  }).join('');
+
+  const allDecided = PITCHES.filter(p => state[p.id] && state[p.id].status !== 'pending').length;
+  const warn = storageOk ? '' : ' — Speichern nicht verfügbar in dieser Sitzung, bitte vor dem Schließen exportieren';
+  document.getElementById('statusLine').textContent = `${allDecided} von ${PITCHES.length} entschieden${warn}`;
+}
+
+function exportAccepted() {
+  const accepted = PITCHES.filter(p => state[p.id] && state[p.id].status === 'accepted');
+  let text = '';
+  const tx = accepted.filter(p=>p.floor==='text');
+  const mm = accepted.filter(p=>p.floor==='multimedia');
+  const ev = accepted.filter(p=>p.floor==='entwicklung');
+  if (tx.length) {
+    text += '## Text\n\n| Headline | Boulevard-Grad | Aufwand |\n|---|---|---|\n';
+    tx.forEach(p => text += `| ${state[p.id].title} | ${p.grade} | ${p.effort} |\n`);
+    text += '\n';
+  }
+  if (mm.length) {
+    text += '## Multimedia\n\n| Titel | Boulevard-Grad | Aufwand |\n|---|---|---|\n';
+    mm.forEach(p => text += `| ${state[p.id].title} | ${p.grade} | ${p.effort} |\n`);
+    text += '\n';
+  }
+  if (ev.length) {
+    text += '## Entwicklung\n\n| Projekt-Idee | Bonusgröße | Aufwand |\n|---|---|---|\n';
+    ev.forEach(p => text += `| ${state[p.id].title} | ${p.bonus} | ${p.effort} |\n`);
+  }
+  const box = document.getElementById('exportBox');
+  box.style.display = 'block';
+  document.getElementById('exportText').value = text || 'Noch nichts angenommen.';
+  box.scrollIntoView({behavior:'smooth'});
+}
+
+loadState();
+</script>
+</body>
+</html>
