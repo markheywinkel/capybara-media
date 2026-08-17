@@ -6,6 +6,7 @@ import { ProduktionScreen } from './components/ProduktionScreen';
 import { TagesErgebnisScreen } from './components/TagesErgebnisScreen';
 import { GameOverScreen } from './components/GameOverScreen';
 import { PhaserOffice } from './phaser/PhaserOffice';
+import { BACKGROUNDS, UI } from './assets/artwork';
 
 function App() {
   const game = useCapybaraGame();
@@ -14,17 +15,28 @@ function App() {
 
   return (
     <div className="app">
-      <header className="app__header">
-        <h1>Capybara Media</h1>
-        <div className="app__stats">
-          <span>Kontostand: {Math.round(state.money)}</span>
-          <span>Reichweite: {Math.round(state.reach)}</span>
-          <span>Reputation: {Math.round(state.reputation)}</span>
-          <span>Abonnenten: {Math.round(state.subscribers)}</span>
+      <header className="app__header" style={{ backgroundImage: `url(${BACKGROUNDS.hauptmenue})` }}>
+        <div className="app__header-tint">
+          <h1>Capybara Media</h1>
+          <div className="app__stats">
+            <span>
+              <img className="inline-icon" src={UI.iconGeld} alt="" />
+              Kontostand: {Math.round(state.money)}
+            </span>
+            <span>
+              <img className="inline-icon" src={UI.iconReichweite} alt="" />
+              Reichweite: {Math.round(state.reach)}
+            </span>
+            <span>
+              <img className="inline-icon" src={UI.iconReputation} alt="" />
+              Reputation: {Math.round(state.reputation)}
+            </span>
+            <span>Abonnenten: {Math.round(state.subscribers)}</span>
+          </div>
+          <button className="btn btn--ghost" onClick={() => setShowOffice((v) => !v)}>
+            {showOffice ? 'Büro-Ansicht ausblenden' : 'Büro-Ansicht (Platzhalter)'}
+          </button>
         </div>
-        <button className="btn btn--ghost" onClick={() => setShowOffice((v) => !v)}>
-          {showOffice ? 'Büro-Ansicht ausblenden' : 'Büro-Ansicht (Platzhalter)'}
-        </button>
       </header>
 
       {showOffice && (

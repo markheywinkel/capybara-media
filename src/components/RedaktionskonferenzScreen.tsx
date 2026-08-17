@@ -1,5 +1,6 @@
 import type { Employee } from '../types';
 import type { GameState } from '../game/engine';
+import { BACKGROUNDS, CHARACTER_ART, UI } from '../assets/artwork';
 
 interface Props {
   state: GameState;
@@ -14,8 +15,10 @@ function StaffSlot({ employee }: { employee: Employee | null }) {
       </div>
     );
   }
+  const portrait = CHARACTER_ART[employee.id];
   return (
     <div className="avatar">
+      {portrait ? <img className="avatar__portrait" src={portrait} alt={employee.name} /> : null}
       <span>{employee.name}</span>
       <span className="avatar__skill">SK{employee.skill}</span>
     </div>
@@ -29,13 +32,23 @@ export function RedaktionskonferenzScreen({ state, onSelectPitch }: Props) {
     <div className="screen">
       <div className="screen__title">Redaktionskonferenz — Pitch-Auswahl</div>
 
+      <div className="scene-banner" style={{ backgroundImage: `url(${BACKGROUNDS.textEtage})` }} />
+
       <div className="row">
         <div className="box box--flex">
-          <span className="label">Tag-Zähler</span>
+          <img className="inline-icon" src={UI.kalender} alt="" />
+          <span className="label" style={{ display: 'inline' }}>
+            Tag-Zähler
+          </span>
+          <br />
           Tag {state.day} / Kapitel {state.chapter}
         </div>
         <div className="box box--flex">
-          <span className="label">Etage</span>
+          <img className="inline-icon" src={UI.iconEtageText} alt="" />
+          <span className="label" style={{ display: 'inline' }}>
+            Etage
+          </span>
+          <br />
           Text-Redaktion
         </div>
       </div>
@@ -47,7 +60,10 @@ export function RedaktionskonferenzScreen({ state, onSelectPitch }: Props) {
         ))}
       </div>
 
-      <span className="label">Pitches (3 Optionen, 1 wählen)</span>
+      <span className="label">
+        <img className="inline-icon inline-icon--tiny" src={UI.pitchCard} alt="" />
+        Pitches (3 Optionen, 1 wählen)
+      </span>
       {state.currentPitches?.map((pitch) => (
         <div key={pitch.id} className="pitch-card">
           <div className="row row--between">

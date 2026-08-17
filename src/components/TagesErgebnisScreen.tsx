@@ -1,4 +1,5 @@
 import type { DayResult } from '../game/engine';
+import { UI } from '../assets/artwork';
 
 interface Props {
   result: DayResult;
@@ -23,7 +24,10 @@ export function TagesErgebnisScreen({ result, nextDay, onContinue }: Props) {
 
   return (
     <div className="screen">
-      <div className="screen__title">Feedback-Beat — Tagesabschluss</div>
+      <div className="screen__title">
+        <img className="inline-icon inline-icon--tiny" src={UI.tagesErgebnisPanel} alt="" />
+        Feedback-Beat — Tagesabschluss
+      </div>
 
       <div className="box">
         <span className="label">Veröffentlicht</span>
@@ -35,14 +39,20 @@ export function TagesErgebnisScreen({ result, nextDay, onContinue }: Props) {
 
       <div className="row">
         <div className="box box--flex">
-          <span className="label">Δ Reichweite</span>
+          <span className="label">
+            <img className="inline-icon inline-icon--tiny" src={UI.iconReichweite} alt="" />Δ
+            Reichweite
+          </span>
           <b>{fmtSigned(reachDelta)}</b>{' '}
           <span className="placeholder-text">
             ({fmt(result.reachBefore)} → {fmt(result.reachAfter)})
           </span>
         </div>
         <div className="box box--flex">
-          <span className="label">Δ Reputation</span>
+          <span className="label">
+            <img className="inline-icon inline-icon--tiny" src={UI.iconReputation} alt="" />Δ
+            Reputation
+          </span>
           <b>{fmtSigned(reputationDelta)}</b>{' '}
           <span className="placeholder-text">
             ({fmt(result.reputationBefore)} → {fmt(result.reputationAfter)})
@@ -52,7 +62,9 @@ export function TagesErgebnisScreen({ result, nextDay, onContinue }: Props) {
 
       <div className="row">
         <div className="box box--flex">
-          <span className="label">Δ Kontostand</span>
+          <span className="label">
+            <img className="inline-icon inline-icon--tiny" src={UI.iconGeld} alt="" />Δ Kontostand
+          </span>
           <b>{fmtSigned(result.moneyDelta)} Münzen</b>
         </div>
         <div className="box box--flex">
