@@ -225,3 +225,46 @@
 .btn--ghost {
   border-style: dashed;
 }
+
+.app__footer {
+  margin-top: 28px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--line);
+  text-align: center;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+.app__footer p {
+  margin: 0 0 4px;
+}
+
+.app__footer p:last-child {
+  margin-bottom: 0;
+}
+
+.app__footer-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--ink);
+}
+
+.app__footer a {
+  color: var(--blue);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.app__footer a:hover {
+  text-decoration: underline;
+}
+
+.app__footer-note {
+  max-width: 56ch;
+  margin-left: auto;
+  margin-right: auto;
+  color: var(--ink-soft);
+  opacity: 0.85;
+  font-size: 11.5px;
+  line-height: 1.5;
+}

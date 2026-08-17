@@ -59,6 +59,21 @@ function App() {
           <GameOverScreen day={state.day} onRestart={() => window.location.reload()} />
         )}
       </main>
+
+      <footer className="app__footer">
+        <p className="app__footer-title">Capybara Media – Manage dein Medienunternehmen!</p>
+        <p>
+          Ein Management-Testspiel von{' '}
+          <a href="https://www.markheywinkel.de" target="_blank" rel="noopener noreferrer">
+            Mark Heywinkel
+          </a>
+        </p>
+        <p className="app__footer-note">
+          <strong>Notiz:</strong> Das Management-Spiel »Capybara Media« ist vollständig KI-generiert.
+          Es sind Claude für den Code sowie GPT für die Grafiken im Einsatz gewesen. Der Code liegt
+          auf GitHub, Host ist Vercel.
+        </p>
+      </footer>
     </div>
   );
 }
